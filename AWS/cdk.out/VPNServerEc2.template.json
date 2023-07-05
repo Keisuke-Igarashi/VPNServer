@@ -1,0 +1,294 @@
+{
+  "Resources": {
+    "VPNServerEc226D95E39": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/23",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/Resource"
+      }
+    },
+    "VPNServerEc2publicSubnet1Subnet2F5537AB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/23",
+        "VpcId": {
+          "Ref": "VPNServerEc226D95E39"
+        },
+        "AvailabilityZone": "ap-northeast-1a",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/publicSubnet1/Subnet"
+      }
+    },
+    "VPNServerEc2publicSubnet1RouteTable5DB46C05": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPNServerEc226D95E39"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2/publicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/publicSubnet1/RouteTable"
+      }
+    },
+    "VPNServerEc2publicSubnet1RouteTableAssociation44E4CA52": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "VPNServerEc2publicSubnet1RouteTable5DB46C05"
+        },
+        "SubnetId": {
+          "Ref": "VPNServerEc2publicSubnet1Subnet2F5537AB"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/publicSubnet1/RouteTableAssociation"
+      }
+    },
+    "VPNServerEc2publicSubnet1DefaultRouteA2D29B65": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "VPNServerEc2publicSubnet1RouteTable5DB46C05"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "VPNServerEc2IGWFCE20ABE"
+        }
+      },
+      "DependsOn": [
+        "VPNServerEc2VPCGWE3998E15"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/publicSubnet1/DefaultRoute"
+      }
+    },
+    "VPNServerEc2IGWFCE20ABE": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/IGW"
+      }
+    },
+    "VPNServerEc2VPCGWE3998E15": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPNServerEc226D95E39"
+        },
+        "InternetGatewayId": {
+          "Ref": "VPNServerEc2IGWFCE20ABE"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2/VPCGW"
+      }
+    },
+    "VPNServerEc2VpcSgD50E7F69": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "VPNServerEc2/VPNServerEc2Vpc-Sg",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:22",
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "ToPort": 22
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:1701",
+            "FromPort": 1701,
+            "IpProtocol": "tcp",
+            "ToPort": 1701
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:5555",
+            "FromPort": 5555,
+            "IpProtocol": "tcp",
+            "ToPort": 5555
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:UDP 500",
+            "FromPort": 500,
+            "IpProtocol": "udp",
+            "ToPort": 500
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:UDP 4500",
+            "FromPort": 4500,
+            "IpProtocol": "udp",
+            "ToPort": 4500
+          }
+        ],
+        "VpcId": {
+          "Ref": "VPNServerEc226D95E39"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2Vpc-Sg/Resource"
+      }
+    },
+    "VPNServerEc2InstanceInstanceRole0D4A45FC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2Instance"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2Instance/InstanceRole/Resource"
+      }
+    },
+    "VPNServerEc2InstanceInstanceProfileA843BC33": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "VPNServerEc2InstanceInstanceRole0D4A45FC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2Instance/InstanceProfile"
+      }
+    },
+    "VPNServerEc2InstanceD1D1B750": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "AvailabilityZone": "ap-northeast-1a",
+        "IamInstanceProfile": {
+          "Ref": "VPNServerEc2InstanceInstanceProfileA843BC33"
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+        },
+        "InstanceType": "t2.micro",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "VPNServerEc2VpcSgD50E7F69",
+              "GroupId"
+            ]
+          }
+        ],
+        "SubnetId": {
+          "Ref": "VPNServerEc2publicSubnet1Subnet2F5537AB"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPNServerEc2/VPNServerEc2Instance"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash"
+        }
+      },
+      "DependsOn": [
+        "VPNServerEc2InstanceInstanceRole0D4A45FC"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/VPNServerEc2Instance/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAAA1VQQY6DMAx8S+9pCt0PbMWh6mkjqHoPXlfNFmKUOKoQyt83KbBoTx6PR56xS1kWhSx2n/rl9/D9PExADuXUsIanqNFTcICiululne6R0eXmK/AQWFRkPbsAnLlVHEXeNSEc5XQbII9uqhIqtJ2BJrQW3/IN1RQYr7rtcOM37uQ9gdFsyP6JM7jYlCUpz5rxpcfFZulOnPI/erQsGoTgDI9nR2F4G/wjLukCbWFZOeMojO7lVNOcaK3rWDm6mw5jjEKN/CB7+EhflOVx9+ON2btg2fQo67n+AjRChnZiAQAA"
+      },
+      "Metadata": {
+        "aws:cdk:path": "VPNServerEc2/CDKMetadata/Default"
+      }
+    }
+  },
+  "Parameters": {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2"
+    }
+  },
+  "Outputs": {
+    "InstancePublicDnsName": {
+      "Value": {
+        "Fn::GetAtt": [
+          "VPNServerEc2InstanceD1D1B750",
+          "PublicDnsName"
+        ]
+      }
+    },
+    "InstancePublicIp": {
+      "Value": {
+        "Fn::GetAtt": [
+          "VPNServerEc2InstanceD1D1B750",
+          "PublicIp"
+        ]
+      }
+    }
+  }
+}
